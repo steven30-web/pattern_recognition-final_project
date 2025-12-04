@@ -5,10 +5,8 @@
 - Detect pedestrians and estimate crowd density in video surveillance footage.
 - Understand object detection and multi-object tracking concepts.
 ### Datasets : human-crowd-dataset
-### Network Model : YOLO("yolov8s.pt")
+### Network Model : YOLO("yolov8s.pt") <br><br>
+### Step 1
+```
 
-``` python
-print("Hello")
-print("Hello")
-print("Hello")
 ```
