@@ -8,6 +8,7 @@
 ### Network Model : YOLO("yolov8s.pt")
 
 ``` python
-afdygqasyvdw
-sdchyudgcyugw
+print("Hello")
+print("Hello")
+print("Hello")
 ```
