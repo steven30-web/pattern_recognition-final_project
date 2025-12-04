@@ -1,2 +1,7 @@
 # pattern_recognition-final_project
-# Pedestrian and Crowd Detection
+
+Topic : Pedestrian and Crowd Detection <br>
+Objectives : 
+- Detect pedestrians and estimate crowd density in video surveillance footage.
+- Understand object detection and multi-object tracking concepts.
+
