@@ -1,4 +1,4 @@
-# pattern_recognition-final_project
+# Pattern Recognition-Final Project
 
 ### Topic : Pedestrian and Crowd Detection <br>
 ### Objectives :
@@ -66,7 +66,7 @@ print("Train images:", len(os.listdir(os.path.join(WORKING_ROOT, 'train', 'image
 print("Valid images:", len(os.listdir(os.path.join(WORKING_ROOT, 'valid', 'images'))))
 ```
 
-### Step 3 : Create YAML for YOLOv8
+### Step 3. Create YAML for YOLOv8
 ```python
 yaml_path = os.path.join(WORKING_ROOT, "human_crowd.yaml")
 
@@ -84,4 +84,145 @@ with open(yaml_path, "w") as f:
 
 print("Created YAML at:", yaml_path)
 print(yaml_text)
+```
+
+### Step 4. Train the model
+```python
+model = YOLO("yolov8s.pt") 
+
+results = model.train(
+    data=yaml_path,
+    epochs=50,         
+    imgsz=640,
+    batch=16,
+    patience=10,
+    project="runs",
+    name="yolov8",  
+)
+
+print("Training finished.")
+
+```
+
+### Step 5. Load best model and validate
+```python
+best_weights = "runs/yolov8/weights/best.pt"
+best = YOLO(best_weights)
+print("Model best loaded:", best_weights)
+
+metrics = best.val(data=yaml_path)
+print("Precision per class:", metrics.box.p)
+print("Recall per class   :", metrics.box.r)
+print("mAP50              :", metrics.box.map50)
+print("mAP50-95           :", metrics.box.map)
+```
+
+### Step 6. Test on a random image from valid set
+```python
+import random
+
+valid_img_dir = os.path.join(WORKING_ROOT, "valid", "images")
+valid_images = [f for f in os.listdir(valid_img_dir) if f.lower().endswith((".jpg", ".jpeg", ".png"))]
+print("Number of valid images:", len(valid_images))
+
+sample_img = random.choice(valid_images)
+sample_path = os.path.join(valid_img_dir, sample_img)
+print("Sample image:", sample_path)
+
+res = best.predict(source=sample_path, conf=0.3)[0]
+annotated = res.plot()  # BGR
+
+annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
+plt.figure(figsize=(8, 8))
+plt.imshow(annotated_rgb)
+plt.axis("off")
+plt.title("Detections on valid sample")
+plt.show()
+```
+
+### Step 7. Video inference with NMS + counting per frame
+```python
+import cv2
+import torchvision.ops as tvops
+
+video_source = "input/1.mp4"    
+output_video = "output/1.mp4"
+
+cap = cv2.VideoCapture(video_source)
+fps = cap.get(cv2.CAP_PROP_FPS)
+w   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+h   = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+out = cv2.VideoWriter(output_video, fourcc, fps, (w, h))
+
+frame_no = 0
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    res = best(frame, conf=0.35, iou=0.5, imgsz=640)[0]
+
+    annotated = frame.copy()
+    count_person = 0
+
+    if res.boxes is not None and len(res.boxes) > 0:
+        xyxy = res.boxes.xyxy  # [N, 4]
+        conf = res.boxes.conf  # [N]
+        cls  = res.boxes.cls   # [N]
+
+        # keep only class 'person' (0)
+        mask_person = (cls == 0)
+        boxes = xyxy[mask_person]
+        scores = conf[mask_person]
+
+        if len(boxes) > 0:
+            # secondary NMS to reduce duplicate boxes
+            keep_idx = tvops.nms(boxes, scores, iou_threshold=0.5)
+            boxes = boxes[keep_idx]
+            scores = scores[keep_idx]
+
+            for i in range(len(boxes)):
+                x1, y1, x2, y2 = boxes[i].tolist()
+                score = scores[i].item()
+
+                bw = x2 - x1
+                bh = y2 - y1
+                if bw <= 0 or bh <= 0:
+                    continue
+
+                ratio = bh / bw
+                # filter extremely tall/skinny or flat boxes (poles, noise)
+                if ratio < 0.8 or ratio > 4.5:
+                    continue
+                # filter very small boxes (noise)
+                if bw < 15 or bh < 25:
+                    continue
+
+                count_person += 1
+                cv2.rectangle(annotated, (int(x1), int(y1)), (int(x2), int(y2)), (0,255,0), 2)
+                cv2.putText(
+                    annotated, f"person {score:.2f}",
+                    (int(x1), int(y1) - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (0,255,0), 2
+                )
+
+    cv2.putText(
+        annotated, f"Person: {count_person}",
+        (20, 40),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1, (255,255,255), 2
+    )
+
+    out.write(annotated)
+    frame_no += 1
+    if frame_no % 20 == 0:
+        print(f"Frame {frame_no}, Person: {count_person}")
+
+cap.release()
+out.release()
+print("Finished. Saved video to:", output_video)
 ```
