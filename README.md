@@ -166,5 +166,7 @@ plt.show()
 
 #### Step 8. Upload a Video And the Model Detect Human Crowd
 #### Video Input </br>
+https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Input/1.mp4 
+</br>
 #### Video Output 
 
