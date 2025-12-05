@@ -1,0 +1,7 @@
+
+path: Datasets/human_crowd
+train: train/images
+val: valid/images
+
+names:
+  0: person
