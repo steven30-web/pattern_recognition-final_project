@@ -1,4 +1,4 @@
-# Pattern Recognition-Final Project
+![alt text](https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Input/github-header-banner.png?raw=true)
 
 ### Topic : Pedestrian and Crowd Detection </br>
 ### Objectives :
