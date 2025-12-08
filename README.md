@@ -142,6 +142,7 @@ results = model.train(
 </br>
 
 #### Step 7. Test on a random image from valid set
+![alt text](https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Output/random.PNG?raw=true)
 ```python
 import random
 import matplotlib.pyplot as plt
@@ -168,4 +169,4 @@ plt.show()
 https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Input/1.mp4 
 
 #### Video Output 
-![alt text](https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Output/random.PNG?raw=true)
+
