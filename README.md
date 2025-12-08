@@ -119,8 +119,8 @@ for split in ["train", "valid"]:
 ```
 </br>
 
-#### Step 4. Buat file human_crowd.yaml untuk YOLOv8 </br></br>
-#### Step 5. Training YOLOv8 pada dataset Human Crowd
+#### Step 4. Create human_crowd.yaml file for YOLOv8 </br></br>
+#### Step 5. Training YOLOv8 on Human Crowd Dataset
 ```python
 from ultralytics import YOLO
 
