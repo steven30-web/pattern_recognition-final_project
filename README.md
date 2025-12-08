@@ -168,5 +168,5 @@ plt.show()
 #### Video Input </br>
 https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Input/1.mp4 
 
-#### Video Output 
-
+#### Video Output </br>
+https://github.com/steven30-web/pattern_recognition-final_project/blob/main/Output/1.mp4
