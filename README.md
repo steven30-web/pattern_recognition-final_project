@@ -136,11 +136,10 @@ results = model.train(
     name="yolov8",
 )
 ```
-
 </br>
 
 #### Step 6. Load best model and validate
-
+</br>
 
 #### Step 7. Test on a random image from valid set
 ```python
