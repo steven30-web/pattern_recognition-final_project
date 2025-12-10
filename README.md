@@ -51,7 +51,7 @@ print("Valid images:", len(os.listdir(os.path.join(WORKING_ROOT, 'valid', 'image
 ```
 </br>
 
-#### Step 3. Generate YOLO-Formatted Pseudo-Labels for Train and Valid Sets
+#### Step 3. Pretrained Train and Valid Sets
 ```python
 import os
 import shutil
